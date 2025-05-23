@@ -5,16 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Find Nearest Location</title>
     <style>
-      body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
-      button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
-      #status { color: blue; margin-top: 10px; }
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        padding: 20px;
+        background-color: #f0f0f0;
+      }
+      h2 {
+        color: #333;
+      }ß
+      button {
+        padding: 12px 24px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      #status {
+        color: #333;
+        margin-top: 15px;
+        font-size: 14px;
+      }
+      p {
+        font-size: 14px;
+        color: #666;
+      }
     </style>
 </head>
 <body>
     <h2>Find Nearest Location</h2>
-    <p>Click below to share your live location and view it on a map:</p>
+    <p>Click below to share your live location and view nearby locations on a map:</p>
     <button onclick="getLocation()">Get My Location</button>
-    <p>Please allow location access when prompted.</p>
+    <p>Please allow location access when prompted. Your location is used only to center the map.</p>
     <p id="status"></p>
     <script>
       function getLocation() {
@@ -30,9 +57,10 @@
         var lat = position.coords.latitude;
         var lon = position.coords.longitude;
         document.getElementById("status").innerText = "Location captured! Redirecting to map...";
-        // Redirect to Google My Maps with user's location as a custom marker
-        var mapUrl = "YOUR_GOOGLE_MY_MAPS_LINK&ll=" + lat + "," + lon + "&z=12";
-        window.location.href = mapUrl;
+        var mapUrl = "https://www.google.com/maps/d/edit?mid=1rfTc8P2coL2PGeuW6mp2jc0O_djS3JE&usp=sharing&ll=" + lat + "," + lon + "&z=12";
+        setTimeout(() => {
+          window.location.href = mapUrl;
+        }, 500);
       }
 
       function showError(error) {

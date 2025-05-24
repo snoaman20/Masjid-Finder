@@ -13,7 +13,7 @@
       }
       h2 {
         color: #333;
-      }ß
+      }
       button {
         padding: 12px 24px;
         font-size: 16px;
@@ -39,11 +39,19 @@
 </head>
 <body>
     <h2>Find Nearest Location</h2>
-    <p>Click below to share your live location and view nearby locations on a map:</p>
+    <p>Click below to share your live location and find the nearest location:</p>
     <button onclick="getLocation()">Get My Location</button>
-    <p>Please allow location access when prompted. Your location is used only to center the map.</p>
+    <p>Please allow location access when prompted. Your location is used only to find the nearest point.</p>
     <p id="status"></p>
     <script>
+      // Define your locations with latitude and longitude
+      const locations = [
+        { name: "Location 1", lat: 40.7128, lon: -74.0060 }, // Example: New York
+        { name: "Location 2", lat: 34.0522, lon: -118.2437 }, // Example: Los Angeles
+        { name: "Location 3", lat: 51.5074, lon: -0.1278 } // Example: London
+        // Add more locations as needed
+      ];
+
       function getLocation() {
         if (navigator.geolocation) {
           document.getElementById("status").innerText = "Fetching your location...";
@@ -54,13 +62,43 @@
       }
 
       function showPosition(position) {
-        var lat = position.coords.latitude;
-        var lon = position.coords.longitude;
-        document.getElementById("status").innerText = "Location captured! Redirecting to map...";
-        var mapUrl = "https://www.google.com/maps/d/edit?mid=1rfTc8P2coL2PGeuW6mp2jc0O_djS3JE&usp=sharing&ll=" + lat + "," + lon + "&z=12";
-        setTimeout(() => {
-          window.location.href = mapUrl;
-        }, 500);
+        const userLat = position.coords.latitude;
+        const userLon = position.coords.longitude;
+
+        // Find the nearest location
+        let nearestLocation = null;
+        let minDistance = Infinity;
+
+        locations.forEach(location => {
+          const distance = calculateDistance(userLat, userLon, location.lat, location.lon);
+          if (distance < minDistance) {
+            minDistance = distance;
+            nearestLocation = location;
+          }
+        });
+
+        if (nearestLocation) {
+          document.getElementById("status").innerText = `Nearest location: ${nearestLocation.name}. Redirecting to map...`;
+          const mapUrl = `https://www.google.com/maps/@${nearestLocation.lat},${nearestLocation.lon},15z`;
+          setTimeout(() => {
+            window.location.href = mapUrl;
+          }, 500);
+        } else {
+          document.getElementById("status").innerText = "No locations found.";
+        }
+      }
+
+      // Haversine formula to calculate distance between two points
+      function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Earth's radius in km
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = 
+          Math.sin(dLat/2) * Math.sin(dLat/2) +
+          Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+          Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c; // Distance in km
       }
 
       function showError(error) {
